@@ -1,0 +1,91 @@
+#
+# Clang Format style file for System V source code
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+
+TabWidth:       4
+IndentWidth:    4
+UseTab:         Never
+BasedOnStyle:   Microsoft
+
+---
+Language: Cpp
+
+AlignConsecutiveDeclarations:
+  Enabled: true
+  AcrossEmptyLines: false
+  AcrossComments: false
+  PadOperators: true
+AlignConsecutiveAssignments:
+  Enabled: true
+  PadOperators: true
+  AlignCompound: true
+  AcrossEmptyLines: false
+AlignConsecutiveBitFields:            Consecutive
+AlignAfterOpenBracket:                AlwaysBreak
+AlignConsecutiveMacros:               AcrossEmptyLines
+AlignOperands:                        Align
+AlignEscapedNewlines:                 Right
+AllowShortBlocksOnASingleLine:        Empty
+AllowShortEnumsOnASingleLine:         false
+AllowShortCaseLabelsOnASingleLine:    false
+AllowShortFunctionsOnASingleLine:     None
+AllowShortIfStatementsOnASingleLine:  Never
+AllowShortLoopsOnASingleLine:         false
+AlignTrailingComments:
+  Kind: Always
+  OverEmptyLines: 0
+BinPackArguments: true
+BinPackParameters: false
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterCaseLabel: true
+  AfterClass: true
+  AfterControlStatement: Always
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterObjCDeclaration: true
+  AfterStruct: true
+  AfterUnion: true
+  AfterExternBlock: true
+  BeforeCatch: true
+  BeforeElse: true
+  BeforeLambdaBody: false
+  BeforeWhile: false
+  IndentBraces: false
+  SplitEmptyFunction: true
+  SplitEmptyRecord: true
+  SplitEmptyNamespace: true
+BracedInitializerIndentWidth:   4
+BreakBeforeInlineASMColon:      Always
+BreakStringLiterals:            false
+ContinuationIndentWidth:        0
+ColumnLimit:                    0
+IncludeBlocks:                  Regroup
+IndentCaseBlocks:               false
+IndentCaseLabels:               false
+IndentExternBlock:              NoIndent
+IndentPPDirectives:             None
+InsertBraces:                   true
+InsertNewlineAtEOF:             true
+KeepEmptyLines:
+  AtEndOfFile: false
+  AtStartOfBlock: false
+  AtStartOfFile: false
+PointerAlignment:               Left
+QualifierAlignment:             Left
+ReferenceAlignment:             Left
+ReflowComments:                 false
+SeparateDefinitionBlocks:       Leave
+SortIncludes:                   false
+SpaceAfterCStyleCast:           false
+SpaceAroundPointerQualifiers:   Default
+SpaceBeforeParens:              ControlStatementsExceptControlMacros
+SpaceBeforeSquareBrackets:      false
+SpaceInEmptyParentheses:        false
+SpacesInCStyleCastParentheses:  false
+SpacesInConditionalStatement:   false
+SpacesInContainerLiterals:      false
+SpacesInSquareBrackets:         false

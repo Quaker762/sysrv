@@ -1,0 +1,20 @@
+#
+# .gitattributes file
+#
+
+* text=auto
+
+*.c         ident text
+*.h         ident text
+*.py        ident text
+*.s         ident text
+*.md        ident text
+*.txt       ident text
+Dockerfile  ident text
+
+?akefile    ident text eol=lf
+*.sh        ident text eol=lf
+?akedefs    ident text eol=lf
+
+*.png binary
+*.jpg binary
