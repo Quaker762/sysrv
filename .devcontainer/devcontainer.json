@@ -1,0 +1,50 @@
+{
+    "image": "ghcr.io/quaker762/sysrv-dev:latest",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-python.flake8",
+                "ms-vscode.makefile-tools",
+                "ms-vscode.cpptools",
+                "ms-vscode.hexeditor",
+                "cschlosser.doxdocgen",
+                "bbenoist.Doxygen",
+                "xaver.clang-format",
+                "zhwu95.riscv",
+                "sonarsource.sonarlint-vscode"
+            ],
+            "settings": {
+                "editor.trimAutoWhitespace": true,
+                "files.insertFinalNewline": true,
+                "files.trimFinalNewlines": true,
+                "files.trimTrailingWhitespace": true,
+                "clang-format.executable": "/usr/bin/clang-format-19",
+                "C_Cpp.default.compilerPath": "/opt/riscv64-gcc/bin/riscv64-unknown-elf-gcc",
+                "C_Cpp.default.cStandard": "c23",
+                "[c]": {
+                    "editor.formatOnSave": true,
+                    "editor.defaultFormatter": "xaver.clang-format",
+                    "editor.tabSize": 4,
+                    "editor.insertSpaces": true
+                },
+                "[makefile]": {
+                    "editor.tabSize": 4,
+                    "editor.insertSpaces": false
+                },
+                "files.associations": {
+                    "*.c": "c",
+                    "*.h": "c"
+                }
+            }
+        }
+    },
+    "containerEnv": {
+        "SYSRV_KERNEL_ARCH": "riscv",
+        "SYSV_ROOT": "/workspaces/sysrv"
+    },
+    "postCreateCommand": {
+        "gdbinit" : "touch ~/.gdbinit && echo \"set auto-load safe-path /\" >> ~/.gdbinit",
+        "install_compiledb" : "pip install --break-system-packages compiledb"
+    }
+}
