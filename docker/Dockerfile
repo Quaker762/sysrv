@@ -47,7 +47,6 @@ RUN mkdir /opt/riscv64-gcc && \
 # Create a Virtual Environment and install compiledb
 RUN python3 -m venv $PYTHON_VENV_PATH
 ENV PATH="$PYTHON_VENV_PATH/bin:$PATH"
-RUN pip install compiledb
 
 # Update the path
 ENV PATH="$PATH:/opt/riscv64-gcc/bin"
