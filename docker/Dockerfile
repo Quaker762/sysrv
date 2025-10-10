@@ -31,6 +31,8 @@ RUN apt install -y build-essential \
                    wget \
                    unzip \
                    device-tree-compiler \
+                   ninja-build \
+                   cmake \
                    && apt clean \
                    && rm -rf /var/lib/apt
 
