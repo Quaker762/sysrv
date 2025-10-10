@@ -1,7 +1,9 @@
 #
-# Dockerfile for System-V Development
+# Dockerfile for System-RV Development
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Copyright (C) 2025 Jesse Buhagiar
 #
 
 # Use ubuntu 24.04
