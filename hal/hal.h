@@ -12,6 +12,11 @@
 #ifndef HAL_H
 #define HAL_H
 
+#include <stdint.h>
+
+typedef uintptr_t srv_physical_address_t; /**< Physical Address type, aliased to @c uintptr_t */
+typedef uintptr_t srv_virtual_address_t;  /**< Virtual Address type, aliased to @c uintptr_t */
+
 /**
  * @brief Unmask interrupts from being generated on the processor
  */
@@ -20,6 +25,6 @@ void srv_hal_EnableInterrupts(void);
 /**
  * @brief Unmask interrupts from being generated on the processor
  */
-void srv_hal_EnableInterrupts(void);
+void srv_hal_DisableInterrupts(void);
 
 #endif
