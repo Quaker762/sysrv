@@ -69,4 +69,11 @@ void srv_hal_MarkPTEExecutable(page_table_entry_t* pte);
  */
 bool srv_hal_IsPTEDirty(page_table_entry_t* pte);
 
+/**
+ * @brief Write a character to the debug terminal
+ *
+ * @param[in] c The character to write to the debug terminal
+ */
+void srv_hal_WriteDebugChar(char c);
+
 #endif
