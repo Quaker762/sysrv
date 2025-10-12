@@ -9,9 +9,10 @@ cmake_minimum_required(VERSION 3.28)
 project(srv_hal C)
 
 # Set up the C Flags specifically for the HAL
-add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+add_compile_options(-ggdb -g3 -Wall -Wextra -Wpedantic -Werror)
 
 set(HAL_SOURCES
+    debug.c
     irq.c
     sbicall.c
     sv48_vm.c

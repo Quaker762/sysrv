@@ -9,7 +9,7 @@ cmake_minimum_required(VERSION 3.28)
 project(kstdlib C)
 
 # Set up the C Flags specifically for the HAL
-add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+add_compile_options(-g3 -ggdb -Wall -Wextra -Wpedantic -Werror)
 
 # Add the HAL as an include path
 include_directories($ENV{SYSRV_ROOT}/hal)
