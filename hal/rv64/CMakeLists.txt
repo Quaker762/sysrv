@@ -13,6 +13,7 @@ add_compile_options(-Wall -Wextra -Wpedantic -Werror)
 
 set(HAL_SOURCES
     irq.c
+    sv48_vm.c
 )
 
 add_library(srv_hal STATIC ${HAL_SOURCES})
