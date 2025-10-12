@@ -11,3 +11,4 @@ set(CMAKE_C_STANDARD 23)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
 add_subdirectory(hal)
+add_subdirectory(kernel/kstdlib)
