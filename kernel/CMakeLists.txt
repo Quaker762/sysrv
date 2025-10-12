@@ -15,6 +15,7 @@ if ($ENV{SYSRV_ARCH} STREQUAL "rv64")
         ${KERNEL_SOURCE_FILES}
         $ENV{SYSRV_ROOT}/kernel/boot/rv64/start.s
     )
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/rv64/)
 endif()
 
 # Set up the C Flags specifically for the HAL
