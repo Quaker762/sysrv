@@ -17,7 +17,7 @@ static const char* digits = "0123456789ABCDEF";
 
     if (number < 0)
     {
-        (void)srv_hal_WriteDebugChar('-');
+        srv_hal_WriteDebugChar('-');
 
         /* Modifying the param directly is bad practice, but let's do it for now */
         number -= number;
@@ -27,7 +27,7 @@ static const char* digits = "0123456789ABCDEF";
     {
         const char to_print  = digits[number % 10];
         number              /= 10;
-        (void)srv_hal_WriteDebugChar(to_print);
+        srv_hal_WriteDebugChar(to_print);
 
         num++;
     } while (number != 0);
@@ -54,13 +54,13 @@ static const char* digits = "0123456789ABCDEF";
     shifts *= 4;
     for (int i = (32 - shifts) / 4; i > 0; i--)
     {
-        (void)srv_hal_WriteDebugChar('0');
+        srv_hal_WriteDebugChar('0');
     }
 
     while (shifts > 0)
     {
         shifts -= 4;
-        (void)srv_hal_WriteDebugChar(digits[(number >> shifts) & 0xFU]);
+        srv_hal_WriteDebugChar(digits[(number >> shifts) & 0xFU]);
     }
 
     return ret;
@@ -77,13 +77,14 @@ int printf_internal(const char* format, __builtin_va_list* va)
         /* Have we encountered a format specifier? */
         if (character == '%')
         {
-            const char format_char = format[index + 1ULL];
+            index++;
+            const char format_char = format[index];
             switch (format_char)
             {
             case 'c':
             {
                 const char c_to_print = __builtin_va_arg(*va, int);
-                (void)srv_hal_WriteDebugChar((char)c_to_print);
+                srv_hal_WriteDebugChar((char)c_to_print);
 
                 num_written++;
                 break;
@@ -108,7 +109,7 @@ int printf_internal(const char* format, __builtin_va_list* va)
             }
             case '%':
             {
-                (void)srv_hal_WriteDebugChar('%');
+                srv_hal_WriteDebugChar('%');
 
                 num_written++;
                 break;
@@ -122,11 +123,13 @@ int printf_internal(const char* format, __builtin_va_list* va)
         else
         {
             /* Just write the character out */
-            (void)srv_hal_WriteDebugChar(format[index]);
+            srv_hal_WriteDebugChar(format[index]);
 
             num_written++;
             index++;
         }
+
+        character = format[index];
     }
 
     return num_written;
