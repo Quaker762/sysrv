@@ -12,7 +12,8 @@
                 "bbenoist.Doxygen",
                 "xaver.clang-format",
                 "zhwu95.riscv",
-                "sonarsource.sonarlint-vscode"
+                "sonarsource.sonarlint-vscode",
+                "twxs.cmake"
             ],
             "settings": {
                 "editor.trimAutoWhitespace": true,
@@ -41,10 +42,12 @@
     },
     "containerEnv": {
         "SYSRV_KERNEL_ARCH": "riscv",
-        "SYSV_ROOT": "/workspaces/sysrv"
+        "SYSRV_ROOT": "/workspaces/sysrv",
+        "SYSRV_ARCH": "rv64",
+        "CMAKE_GENERATOR" : "Ninja"
     },
     "postCreateCommand": {
         "gdbinit" : "touch ~/.gdbinit && echo \"set auto-load safe-path /\" >> ~/.gdbinit",
-        "install_compiledb" : "pip install --break-system-packages compiledb"
+        "install_compiledb" : "pip install --break-system-packages compiledb",
     }
 }

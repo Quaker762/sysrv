@@ -10,11 +10,13 @@
 *.s         ident text
 *.md        ident text
 *.txt       ident text
+*.json      ident text
 Dockerfile  ident text
 
 ?akefile    ident text eol=lf
 *.sh        ident text eol=lf
 ?akedefs    ident text eol=lf
+.devcontainer/devcontainer.json ident text eol=lf
 
 *.png binary
 *.jpg binary
