@@ -19,7 +19,7 @@ if ($ENV{SYSRV_ARCH} STREQUAL "rv64")
 endif()
 
 # Set up the C Flags specifically for the HAL
-add_compile_options(-Wall -Wextra -Wpedantic -Werror)
+add_compile_options(-g3 -ggdb -Wall -Wextra -Wpedantic -Werror)
 
 # Add the HAL as an include path
 
@@ -32,5 +32,4 @@ SET(LINKER_SCRIPT "${LINKER_SCRIPT_PATH}")
 SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -nostartfiles -T ${LINKER_SCRIPT} -Wl,-Map=${TARGET}.map -Wl,--gc-sections -lgcc -nostdlib -mcmodel=medany")
 
 add_executable(${SRV_KERN_NAME} ${KERNEL_SOURCE_FILES})
-target_link_libraries(${SRV_KERN_NAME} srv_hal)
-target_link_libraries(${SRV_KERN_NAME} kstdlib)
+target_link_libraries(${SRV_KERN_NAME} kstdlib srv_hal)

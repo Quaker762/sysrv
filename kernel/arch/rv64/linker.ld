@@ -8,39 +8,31 @@
 OUTPUT_FORMAT(elf64-littleriscv)
 ENTRY(_start)
 
-PHDRS
-{
-    kernel_text PT_LOAD FLAGS(5);
-    boot_text PT_LOAD FLAGS(5);
-    kernel_data PT_LOAD FLAGS(6);
-    boot_data PT_LOAD FLAGS(6);
-}
-
 __PHYSICAL_MEMORY_START      = 0x80000000;
 __KERNEL_PHYSICAL_START      = 0x80200000;
-__KERNEL_STACK_POOL_PHYSICAL = __PHYSICAL_MEMORY_START + 16M;
 
 SECTIONS
 {
     . = __KERNEL_PHYSICAL_START;
 
-    .text : AT(ADDR(.text) + __PHYSICAL_MEMORY_START)
+    .text :
     {
+        *(.init)
         PROVIDE(__kernel_text_start = .);
         *(.text)
         . = ALIGN(4K);
         PROVIDE(__kernel_text_end = .);
-    } : kernel_text
+    }
 
-    .rodata : AT(ADDR(.rodata) + __PHYSICAL_MEMORY_START)
+    .rodata :
     {
         PROVIDE(__kernel_rodata_start = .);
         *(.rodata)
         . = ALIGN(4K);
         PROVIDE(__kernel_rodata_end = .);
-    } : kernel_text
+    }
 
-	.data ALIGN(8) : AT(ADDR(.data) + __PHYSICAL_MEMORY_START)
+	.data ALIGN(8) :
 	{
 		PROVIDE(__kernel_data_start = .);
 		PROVIDE(__global_pointer$ = . + 0x800);
@@ -48,9 +40,9 @@ SECTIONS
 		*(.data)
         . = ALIGN(4K);
 		PROVIDE(__kernel_data_end = .);
-	} : kernel_data
+	}
 
-    .bss ALIGN(8) (NOLOAD) : AT(ADDR(.bss) + __PHYSICAL_MEMORY_START)
+    .bss ALIGN(8) (NOLOAD) :
     {
         PROVIDE(__kernel_bss_start = .);
         *(COMMON)
@@ -60,7 +52,7 @@ SECTIONS
     }
 
     /* Configure the Kernel Stack pool */
-    .kernel_stack (NOLOAD) : AT(__KERNEL_STACK_POOL_PHYSICAL)
+    .kernel_stack (NOLOAD) :
     {
         __kernel_stack_bottom = .;
         . += 4K;
