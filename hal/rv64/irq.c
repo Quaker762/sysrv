@@ -9,10 +9,12 @@
 
 void srv_hal_EnableInterrupts(void)
 {
-    /* Clear SSTATUS.SIE */
-    __asm__ volatile("csrrci zero, sstatus, 1");
+    /* Set SSTATUS.SIE to 1 */
+    __asm__ volatile("csrrsi zero, sstatus, 1");
 }
 
 void srv_hal_DisableInterrupts(void)
 {
+    /* Clear SSTATUS.SIE */
+    __asm__ volatile("csrrci zero, sstatus, 1");
 }
