@@ -26,10 +26,13 @@ add_compile_options(-g3 -ggdb -Wall -Wextra -Wpedantic -Werror)
 set(KERNEL_SOURCE_FILES
     ${KERNEL_SOURCE_FILES}
     kmain.c
+    mm/kalloc.c
+    mm/phys/kpalloc.c
 )
 
 SET(LINKER_SCRIPT "${LINKER_SCRIPT_PATH}")
 SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -nostartfiles -T ${LINKER_SCRIPT} -Wl,-Map=${TARGET}.map -Wl,--gc-sections -lgcc -nostdlib -mcmodel=medany")
 
 add_executable(${SRV_KERN_NAME} ${KERNEL_SOURCE_FILES})
+target_include_directories(${SRV_KERN_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(${SRV_KERN_NAME} kstdlib srv_hal)
