@@ -1,17 +1,17 @@
 /****************************************************************
- * @file    sv48_vm.c
- * @brief   RV64 Sv48 Virtual Memory Functions
+ * @file    sv39_vm.c
+ * @brief   RV64 Sv39 Virtual Memory Functions
  *
  * @copyright SPDX-License-Identifier: GPL-3.0-or-later
  ****************************************************************/
 
 #include <hal.h>
 
-#define RV64_PTE_VALID   (1ULL << 0ULL) /**< Sv48 PTE Valid bit */
-#define RV64_PTE_READ    (1ULL << 1ULL) /**< Sv48 PTE Read bit */
-#define RV64_PTE_WRITE   (1ULL << 2ULL) /**< Sv48 PTE Write bit */
-#define RV64_PTE_EXECUTE (1ULL << 3ULL) /**< Sv48 PTE Execute bit */
-#define RV64_PTE_DIRTY   (1ULL << 7ULL) /**< Sv48 PTE Dirty flag */
+#define RV64_PTE_VALID   (1ULL << 0ULL) /**< Sv39 PTE Valid bit */
+#define RV64_PTE_READ    (1ULL << 1ULL) /**< Sv39 PTE Read bit */
+#define RV64_PTE_WRITE   (1ULL << 2ULL) /**< Sv39 PTE Write bit */
+#define RV64_PTE_EXECUTE (1ULL << 3ULL) /**< Sv39 PTE Execute bit */
+#define RV64_PTE_DIRTY   (1ULL << 7ULL) /**< Sv39 PTE Dirty flag */
 
 void srv_hal_MarkPTEValid(page_table_entry_t* pte)
 {
