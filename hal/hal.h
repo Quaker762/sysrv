@@ -76,4 +76,11 @@ bool srv_hal_IsPTEDirty(page_table_entry_t* pte);
  */
 void srv_hal_WriteDebugChar(char c);
 
+/**
+ * @brief Get the ID of the currently executing CPU
+ *
+ * @return The number of the executing CPU
+ */
+uint32_t srv_hal_GetExecutingCPU(void);
+
 #endif

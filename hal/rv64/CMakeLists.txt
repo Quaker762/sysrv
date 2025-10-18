@@ -12,6 +12,7 @@ project(srv_hal C)
 add_compile_options(-ggdb -g3 -Wall -Wextra -Wpedantic -Werror)
 
 set(HAL_SOURCES
+    cpu.c
     debug.c
     irq.c
     sbicall.c
