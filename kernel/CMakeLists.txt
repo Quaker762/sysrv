@@ -26,9 +26,19 @@ add_compile_options(-g3 -ggdb -Wall -Wextra -Wpedantic -Werror)
 set(KERNEL_SOURCE_FILES
     ${KERNEL_SOURCE_FILES}
     kmain.c
+    panic.c
+    drivers/fdt/fdt.c
     mm/kalloc.c
     mm/phys/kpalloc.c
 )
+
+# Add any Architecture specific source files
+if ($ENV{SYSRV_ARCH} STREQUAL "rv64")
+    set(KERNEL_SOURCE_FILES
+        ${KERNEL_SOURCE_FILES}
+        arch/rv64/init.c
+    )
+endif()
 
 SET(LINKER_SCRIPT "${LINKER_SCRIPT_PATH}")
 SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -nostartfiles -T ${LINKER_SCRIPT} -Wl,-Map=${TARGET}.map -Wl,--gc-sections -lgcc -nostdlib -mcmodel=medany")

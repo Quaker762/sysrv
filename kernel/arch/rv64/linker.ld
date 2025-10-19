@@ -26,6 +26,7 @@ SECTIONS
 
     .rodata :
     {
+        *(.init.data)
         PROVIDE(__kernel_rodata_start = .);
         *(.rodata)
         . = ALIGN(4K);
