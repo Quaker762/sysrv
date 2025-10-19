@@ -66,6 +66,19 @@ static const char* digits = "0123456789ABCDEF";
     return ret;
 }
 
+[[gnu::always_inline]] static inline int printf_internal_String(const char* string)
+{
+    __SIZE_TYPE__ curr_index = 0ULL;
+    while (string[curr_index] != '\0')
+    {
+        srv_hal_WriteDebugChar(string[curr_index]);
+
+        curr_index++;
+    }
+
+    return curr_index;
+}
+
 int printf_internal(const char* format, __builtin_va_list* va)
 {
     __SIZE_TYPE__ index       = 0ULL;
@@ -104,6 +117,13 @@ int printf_internal(const char* format, __builtin_va_list* va)
             {
                 uint32_t val  = __builtin_va_arg(*va, uint32_t);
                 num_written  += printf_internal_Hex(val);
+
+                break;
+            }
+            case 's':
+            {
+                const char* s  = __builtin_va_arg(*va, const char*);
+                num_written   += printf_internal_String(s);
 
                 break;
             }
