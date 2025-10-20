@@ -21,4 +21,15 @@
  */
 [[gnu::access(write_only, 1), gnu::access(read_only, 2)]] void* memcpy(void* restrict s1, const char* restrict s2, size_t n);
 
+/**
+ * @brief Kernel Standard Library @c strlen implementation
+ *
+ * @param[in] str Pointer to the character array to compute the length of
+ *
+ * @warning @c str <b>MUST</b> be @c NUL terminated!
+ *
+ * @return Number of characters in the string
+ */
+size_t strlen(const char* str);
+
 #endif

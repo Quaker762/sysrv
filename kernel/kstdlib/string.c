@@ -22,3 +22,15 @@ void* memcpy(void* restrict s1, const char* restrict s2, size_t n)
 
     return s1;
 }
+
+size_t strlen(const char* str)
+{
+    size_t count = 0ULL;
+
+    while (str[count] != '\0')
+    {
+        count++;
+    }
+
+    return count;
+}
