@@ -19,7 +19,7 @@ if ($ENV{SYSRV_ARCH} STREQUAL "rv64")
 endif()
 
 # Set up the C Flags specifically for the HAL
-add_compile_options(-g3 -ggdb -Wall -Wextra -Wpedantic -Werror)
+add_compile_options(-g3 -ggdb -Wall -Wextra -Wpedantic -Werror -fdiagnostics-color=always)
 
 # Add the HAL as an include path
 
