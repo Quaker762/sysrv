@@ -19,7 +19,7 @@
  *
  * @return Pointer to @c s1
  */
-[[gnu::access(write_only, 1), gnu::access(read_only, 2)]] void* memcpy(void* restrict s1, const char* restrict s2, size_t n);
+[[gnu::access(write_only, 1), gnu::access(read_only, 2)]] void* memcpy(void* restrict s1, const void* restrict s2, size_t n);
 
 /**
  * @brief Kernel Standard Library @c strlen implementation

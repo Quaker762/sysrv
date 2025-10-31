@@ -9,7 +9,7 @@
 
 #include <stdint.h>
 
-void* memcpy(void* restrict s1, const char* restrict s2, size_t n)
+void* memcpy(void* restrict s1, const void* restrict s2, size_t n)
 {
     uint8_t*       s1_as_u8 = (uint8_t*)s1;
     const uint8_t* s2_as_u8 = (const uint8_t*)s2;
