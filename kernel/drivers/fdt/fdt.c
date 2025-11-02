@@ -9,23 +9,36 @@
 #include <mm/kalloc.h>
 #include <string.h>
 
-#define FDT_MAGIC        0xD00DFEEDUL
-#define FDT_BEGIN_NODE   0x00000001UL /**< Node begin token */
-#define FDT_END_NODE     0x00000002UL /**< Node end token */
-#define FDT_PROP         0x00000003UL
-#define FDT_NOP          0x00000004UL
-#define FDT_END          0x00000009UL
+#define FDT_MAGIC          0xD00DFEEDUL
+#define FDT_BEGIN_NODE     0x00000001UL /**< Node begin token */
+#define FDT_END_NODE       0x00000002UL /**< Node end token */
+#define FDT_PROP           0x00000003UL
+#define FDT_NOP            0x00000004UL
+#define FDT_END            0x00000009UL
 
-#define FDT_MAX_CHILDREN 32UL /**< The max number of children a node can have. Clamped at 32 for now */
+#define FDT_MAX_CHILDREN   16UL /**< The max number of children a node can have. Clamped at 32 for now */
+#define FDT_MAX_PROPERTIES 16UL /**< The max number of children a node can have. Clamped at 32 for now */
+
+/**
+ * @brief Per-node property structure
+ *
+ */
+typedef struct
+{
+    const char*    name;
+    const uint8_t* value;
+    uint32_t       length;
+} fdt_node_property_t;
 
 /**
  * @brief Flattened Device Tree binary node in-memory structure
  */
 typedef struct fdt_node
 {
-    struct fdt_node* parent;                     /* The parent node of this node*/
-    struct fdt_node* children[FDT_MAX_CHILDREN]; /**< The child nodes of this node*/
-    const char*      name;                       /**< The name of this node */
+    struct fdt_node*       parent;                         /* The parent node of this node*/
+    const struct fdt_node* children[FDT_MAX_CHILDREN];     /**< The child nodes of this node*/
+    fdt_node_property_t*   properties[FDT_MAX_PROPERTIES]; /**< The properties for this node */
+    const char*            name;                           /**< The name of this node */
 } fdt_node_t;
 
 /**
@@ -42,6 +55,22 @@ static struct fdt_header* fdt_info_block = NULL;
 static fdt_node_t*        root_node      = NULL;
 
 /**
+ * @brief Parse the device tree
+ */
+static void fdt_ParseTree(void);
+
+/**
+ * @brief Find a node by name given a root node
+ *
+ * @param[in] root The root node to search
+ * @param[in] node_name The name of the node
+ *
+ * @return Pointer to an @ref fdt_node_t
+ * @return @c NULL if the node cannot be found
+ */
+static const fdt_node_t* fdt_FindNodeByName(const fdt_node_t* root, const char* node_name);
+
+/**
  * @brief Align a value to the next Device Tree word address
  *
  * @param[in] value The value to align
@@ -51,6 +80,24 @@ static fdt_node_t*        root_node      = NULL;
 static inline size_t fdt_AlignToNextWord(const size_t value)
 {
     return value + ((sizeof(uint32_t) - value) % sizeof(uint32_t));
+}
+
+/**
+ * @brief Read a word from the Device Tree structure
+ *
+ * @param[in] ptr Pointer to the word to read
+ *
+ * @return The word at the pointer in the correct CPU byte order
+ */
+static inline uint32_t fdt_Read32(const uint8_t* ptr)
+{
+#ifdef SRV_SYSTEM_BIG_ENDIAN
+#error "Big Endian Systems are unsupported! You probably ate a SPARC!"
+#else
+    uint32_t word;
+    (void)memcpy((void*)&word, (const void*)ptr, sizeof(uint32_t));
+    return __builtin_bswap32(word);
+#endif
 }
 
 /**
@@ -83,21 +130,46 @@ static inline bool fdt_InsertChild(fdt_node_t* const node, const fdt_node_t* con
 }
 
 /**
- * @brief Read a word from the Device Tree structure
+ * @brief Insert a property into a node
  *
- * @param[in] ptr Pointer to the word to read
+ * @param[in] node          The node to insert the property into
+ * @param[in] property_ptr  Pointer to the property's data
  *
- * @return The word at the pointer in the correct CPU byte order
+ * @return true
+ * @return false
  */
-static inline uint32_t fdt_Read32(const uint8_t* ptr)
+static inline bool fdt_InsertProperty(fdt_node_t* const node, const uint32_t nameoff, const uint32_t prop_len, const void* property_ptr)
 {
-#ifdef SRV_SYSTEM_BIG_ENDIAN
-#error "Big Endian Systems are unsupported! You probably ate a SPARC!"
-#else
-    uint32_t word;
-    (void)memcpy((void*)&word, (const void*)ptr, sizeof(uint32_t));
-    return __builtin_bswap32(word);
-#endif
+    size_t prop_index = 0ULL;
+
+    const uint8_t* fdt_info_as_u8 = (const uint8_t*)fdt_info_block;
+
+    /* Walk the child array until we find a free slot*/
+    while (prop_index < FDT_MAX_PROPERTIES)
+    {
+        if (node->properties[prop_index] == NULL)
+        {
+            /* Allocate a new property */
+            fdt_node_property_t* property = (fdt_node_property_t*)srv_kalloc_EternalAlloc(sizeof(fdt_node_property_t));
+
+            /* Fill the property */
+            /* FIXME: We can do this ahead of time instead of on each loop */
+            const uint32_t string_table_offset = fdt_Read32((const uint8_t*)&fdt_info_block->off_dt_strings);
+
+            property->name   = (const char*)(&fdt_info_as_u8[string_table_offset + nameoff]);
+            property->length = prop_len;
+            property->value  = property_ptr;
+
+            node->properties[prop_index] = property;
+
+            return true;
+        }
+
+        prop_index++;
+    }
+
+    /* If we get here, the insertion failed, so return false */
+    return false;
 }
 
 static void fdt_ParseTree(void)
@@ -149,9 +221,11 @@ static void fdt_ParseTree(void)
         {
             fdt_prop_t* prop = (fdt_prop_t*)&dt_start_ptr[curr_offset];
 
-            const uint32_t prop_len = fdt_Read32((const uint8_t*)&prop->len);
+            const uint32_t prop_len   = fdt_Read32((const uint8_t*)&prop->len);
+            const uint32_t str_offset = fdt_Read32((const uint8_t*)&prop->nameoff);
 
-            //const uint32_t str_offset  = fdt_Read32((const uint8_t*)&dt_start_ptr[curr_offset + sizeof(uint32_t)]);
+            fdt_InsertProperty(curr_node, str_offset, prop_len, (const uint8_t*)prop + sizeof(fdt_prop_t));
+
             curr_offset += sizeof(fdt_prop_t) + fdt_AlignToNextWord(prop_len); /* Take into account the second word of the prop being the name offset */
         }
         else if (token == FDT_NOP)
@@ -163,6 +237,21 @@ static void fdt_ParseTree(void)
             break;
         }
     }
+}
+
+static const fdt_node_t* fdt_FindNodeByName(const fdt_node_t* root, const char* node_name)
+{
+    /* Search the children for the node */
+    for (size_t child_index = 0ULL; child_index < FDT_MAX_CHILDREN; child_index++)
+    {
+        const fdt_node_t* node = root->children[child_index];
+        if (strcmp(node->name, node_name) == 0)
+        {
+            return node;
+        }
+    }
+
+    return NULL;
 }
 
 bool srv_fdt_Init(void* fdt_ptr)
@@ -186,5 +275,26 @@ bool srv_fdt_Init(void* fdt_ptr)
 
 size_t srv_fdt_GetMemorySize(void)
 {
+    /* FIXME: This should _really_ be better than this, but I just want this to work for now */
+    const fdt_node_t* memory_node = fdt_FindNodeByName(root_node, "memory@80000000");
+    if (memory_node == NULL)
+    {
+        return 0ULL;
+    }
+
+    /* Search for the "reg" property */
+    for (size_t prop_index = 0ULL; prop_index < FDT_MAX_PROPERTIES; prop_index++)
+    {
+        const fdt_node_property_t* prop = memory_node->properties[prop_index];
+
+        if (strcmp(prop->name, "reg") == 0)
+        {
+            /* Just return the size in bytes. We don't bother with the upper word */
+            const uint32_t size_lo = fdt_Read32(&prop->value[12]);
+
+            return size_lo;
+        }
+    }
+
     return 0ULL;
 }
