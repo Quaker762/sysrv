@@ -32,4 +32,16 @@
  */
 size_t strlen(const char* str);
 
+/**
+ * @brief Compare two strings for equality
+ *
+ * @param[in] s1 String s1
+ * @param[in] s2 String s2
+ *
+ * @return 0 if both @c s1 and @c s2 are equal
+ * @return > 0 if @c s1 is greater than @c s2
+ * @return < 0 if @c s1 is less than @c s2
+ */
+int strcmp(const char* s1, const char* s2);
+
 #endif
