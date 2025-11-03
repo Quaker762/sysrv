@@ -9,6 +9,7 @@
 
 #include <mm/kalloc.h>
 #include <hal.h>
+#include <panic.h>
 
 extern uintptr_t __kalloc_eternal_start;
 extern uintptr_t __kalloc_eternal_end;
@@ -26,11 +27,10 @@ void* srv_kalloc_EternalAlloc(size_t size)
 
         /* Bump it! */
         curr_kalloc_eternal_address += size;
-
-        /*
-         * FIXME: We probably need to panic here instead of returning NULL, however I do like the fact
-         * that it's up to the caller to decide what to do...
-         */
+    }
+    else
+    {
+        srv_KernelPanic("Eternal Heap Exhausted!");
     }
 
     return alloc_ptr;
