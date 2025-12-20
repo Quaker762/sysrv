@@ -155,7 +155,7 @@ int printf_internal(const char* format, __builtin_va_list* va)
     return num_written;
 }
 
-int printf(const char* format, ...)
+int kprintf(const char* format, ...)
 {
     __builtin_va_list arg_list;
 

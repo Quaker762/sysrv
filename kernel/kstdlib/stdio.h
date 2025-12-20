@@ -18,6 +18,6 @@
  *
  * @return The number of bytes written
  */
-[[gnu::format(printf, 1, 2)]] int printf(const char* format, ...);
+[[gnu::format(printf, 1, 2)]] int kprintf(const char* format, ...);
 
 #endif

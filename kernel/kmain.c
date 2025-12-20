@@ -13,7 +13,7 @@
 
 int kmain(void)
 {
-    printf("Hello, World!\n");
+    kprintf("Hello, World!\n");
 
     for (;;)
     {

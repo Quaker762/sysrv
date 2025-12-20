@@ -12,7 +12,7 @@
 
 [[noreturn]] void srv_KernelPanic(const char* cause)
 {
-    printf("panic[cpu%d]: %s\n", srv_hal_GetExecutingCPU(), cause);
+    kprintf("panic[cpu%d]: %s\n", srv_hal_GetExecutingCPU(), cause);
 
     /* Spin forever */
     for (;;)
