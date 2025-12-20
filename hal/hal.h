@@ -16,7 +16,10 @@
 
 #if defined(__SYSRV_ARCH_RV64__)
 #include <rv64/paging.h>
+#include <rv64/rv64_proc.h>
 #endif
+
+#define SYSRV_MAX_CPUS 8UL /**< Max number of logical CPUs we support. FIXME: This should probably be dynamic */
 
 typedef uintptr_t srv_physical_address_t; /**< Physical Address type, aliased to @c uintptr_t */
 typedef uintptr_t srv_virtual_address_t;  /**< Virtual Address type, aliased to @c uintptr_t */
@@ -82,5 +85,12 @@ void srv_hal_WriteDebugChar(char c);
  * @return The number of the executing CPU
  */
 uint32_t srv_hal_GetExecutingCPU(void);
+
+/**
+ * @brief Get a pointer to the currently executing CPU's context struct
+ *
+ * @return Pointer to the current CPU's context
+ */
+srv_cpu_context_t* srv_hal_GetCurrentContextStruct(void);
 
 #endif

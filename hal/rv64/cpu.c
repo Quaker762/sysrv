@@ -7,6 +7,8 @@
 
 #include <hal.h>
 
+static srv_cpu_t cpus[SYSRV_MAX_CPUS]; /**< Logical processor bookkeeping array */
+
 uint32_t srv_hal_GetExecutingCPU(void)
 {
     uint32_t cpu_num;
@@ -15,4 +17,12 @@ uint32_t srv_hal_GetExecutingCPU(void)
                      : "=r"(cpu_num));
 
     return cpu_num;
+}
+
+srv_cpu_context_t* srv_hal_GetCurrentContextStruct(void)
+{
+    /* Get the CPU ID and use that as an index into our state array */
+    const cpu_num = srv_hal_GetExecutingCPU();
+
+    return &cpus[cpu_num].registers;
 }
