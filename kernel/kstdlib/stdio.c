@@ -8,6 +8,13 @@
 #include <stdio.h>
 
 #include <hal.h>
+#include <limits.h>
+
+#if (ULONG_MAX == 0xFFFFFFFFUL)
+typedef uint32_t srv_printf_ulong_type_t;
+#elif ULONG_MAX == 0xFFFFFFFFFFFFFFFFUL
+typedef uint64_t srv_printf_ulong_type_t;
+#endif
 
 static const char* digits = "0123456789ABCDEF";
 
@@ -35,7 +42,54 @@ static const char* digits = "0123456789ABCDEF";
     return num;
 }
 
+[[gnu::always_inline]] static inline int printf_internal_ULong(srv_printf_ulong_type_t number)
+{
+    srv_printf_ulong_type_t num = 0;
+
+    do
+    {
+        const char to_print  = digits[number % 10];
+        number              /= 10;
+        srv_hal_WriteDebugChar(to_print);
+
+        num++;
+    } while (number != 0);
+
+    return num;
+}
+
 [[gnu::always_inline]] static inline int printf_internal_Hex(int number)
+{
+    /* Stole this from kling, but it's pretty basic */
+
+    int ret    = 0;
+    int shifts = 0;
+    for (__SIZE_TYPE__ i = number; i > 0; i >>= 4)
+    {
+        shifts++;
+    }
+
+    if (shifts == 0)
+    {
+        shifts = 1;
+    }
+
+    shifts *= 4;
+    for (int i = (32 - shifts) / 4; i > 0; i--)
+    {
+        srv_hal_WriteDebugChar('0');
+    }
+
+    while (shifts > 0)
+    {
+        shifts -= 4;
+        srv_hal_WriteDebugChar(digits[(number >> shifts) & 0xFU]);
+    }
+
+    return ret;
+}
+
+[[gnu::always_inline]] static inline int printf_internal_HexULong(srv_printf_ulong_type_t number)
 {
     /* Stole this from kling, but it's pretty basic */
 
@@ -94,6 +148,25 @@ int printf_internal(const char* format, __builtin_va_list* va)
             const char format_char = format[index];
             switch (format_char)
             {
+            case 'l':
+            {
+                index++;
+                const char next_format_char = format[index];
+
+                if (next_format_char == 'x')
+                {
+                    srv_printf_ulong_type_t val  = __builtin_va_arg(*va, srv_printf_ulong_type_t);
+                    num_written                 += printf_internal_HexULong(val);
+                    break;
+                }
+                else if (next_format_char == 'u')
+                {
+                    srv_printf_ulong_type_t val  = __builtin_va_arg(*va, srv_printf_ulong_type_t);
+                    num_written                 += printf_internal_ULong(val);
+                }
+
+                break;
+            }
             case 'c':
             {
                 const char c_to_print = __builtin_va_arg(*va, int);
