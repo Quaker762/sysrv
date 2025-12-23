@@ -6,7 +6,7 @@
 
 cmake_minimum_required(VERSION 3.28)
 
-project(srv_hal C)
+project(srv_hal C ASM)
 
 # Set up the C Flags specifically for the HAL
 add_compile_options(-ggdb -g3 -Wall -Wextra -Wpedantic -Werror)
@@ -17,6 +17,7 @@ set(HAL_SOURCES
     irq.c
     sbicall.c
     sv39_vm.c
+    context.s
 )
 
 add_library(srv_hal STATIC ${HAL_SOURCES})

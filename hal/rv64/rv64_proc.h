@@ -51,5 +51,4 @@ typedef struct
 typedef struct
 {
     srv_cpu_context_t registers; /**< The current register state of this processor */
-
 } srv_cpu_t;

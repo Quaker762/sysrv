@@ -93,4 +93,10 @@ uint32_t srv_hal_GetExecutingCPU(void);
  */
 srv_cpu_context_t* srv_hal_GetCurrentContextStruct(void);
 
+/**
+ * @brief Save the current executing processor's context to
+ *        its CPU control block
+ */
+void srv_hal_SaveCPUContext(void);
+
 #endif
