@@ -20,4 +20,17 @@
  */
 [[gnu::format(printf, 1, 2)]] int kprintf(const char* format, ...);
 
+/**
+ * @brief Kernel variadic printf function
+ *
+ * @param[in] format  The format string to write
+ * @param[in] va_list The variadic args list
+ *
+ * @note This function implicitly writes to the Kernel's debug console using the
+ *       underlying Architecture HAL!
+ *
+ * @return The number of bytes written
+ */
+[[gnu::format(vprintf, 1, 2)]] int kvprintf(const char* format, __builtin_va_list va_list);
+
 #endif

@@ -238,3 +238,10 @@ int kprintf(const char* format, ...)
 
     return ret;
 }
+
+int kvprintf(const char* format, __builtin_va_list va_list)
+{
+    const int ret = printf_internal(format, &va_list);
+
+    return ret;
+}
