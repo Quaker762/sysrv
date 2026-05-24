@@ -10,7 +10,18 @@ ENTRY(_start)
 
 __PHYSICAL_MEMORY_START      = 0x80000000;
 __KERNEL_PHYSICAL_START      = 0x80200000;
-__KERNEL_VIRTUAL_START       = 0xffffffff80200000;
+
+/*
+ * Kernel virtual region base: -2 GB in Sv39, matching the Linux RISC-V
+ * address map (ffffffff80000000 - ffffffffffffffff).
+ *
+ * __KERNEL_VA_PA_OFFSET is the fixed delta between a kernel virtual address
+ * and its physical address, derived from the single Sv39 gigapage that maps
+ * 0xffffffff80000000 -> 0x80000000.  Stripping these upper bits from any
+ * kernel VA gives its PA, i.e.  PA = VA - __KERNEL_VA_PA_OFFSET.
+ */
+__KERNEL_VIRTUAL_BASE        = 0xffffffff80000000;
+__KERNEL_VA_PA_OFFSET        = __KERNEL_VIRTUAL_BASE - __PHYSICAL_MEMORY_START;
 
 SECTIONS
 {
@@ -25,19 +36,27 @@ SECTIONS
         __boot_end = ABSOLUTE(.);
     }
 
-    . = __KERNEL_VIRTUAL_START;
+    /*
+     * Place all kernel sections immediately after the boot section, in both
+     * physical memory (LMA = __boot_end) and virtual memory
+     * (VMA = __boot_end + __KERNEL_VA_PA_OFFSET).
+     *
+     * This ensures the Sv39 gigapage (0xffffffff80000000 -> 0x80000000)
+     * translates every kernel VMA exactly to its physical load address:
+     *   LMA = VMA - __KERNEL_VA_PA_OFFSET
+     */
+    . = __boot_end + __KERNEL_VA_PA_OFFSET;
+    PROVIDE(__kernel_virtual_start = .);
 
-    HIDDEN(__KERNEL_VA_CODE_OFFSET = __KERNEL_VIRTUAL_START - __boot_end);
-    .text : AT(ADDR(.text) - __KERNEL_VA_CODE_OFFSET)
+    .text : AT(ADDR(.text) - __KERNEL_VA_PA_OFFSET)
     {
-
         PROVIDE(__kernel_text_start = .);
         *(.text)
         . = ALIGN(4K);
         PROVIDE(__kernel_text_end = .);
     }
 
-    .rodata : AT(ADDR(.rodata) - __KERNEL_VA_CODE_OFFSET)
+    .rodata : AT(ADDR(.rodata) - __KERNEL_VA_PA_OFFSET)
     {
         PROVIDE(__kernel_rodata_start = .);
         *(.rodata)
@@ -45,7 +64,7 @@ SECTIONS
         PROVIDE(__kernel_rodata_end = .);
     }
 
-	.data ALIGN(8) : AT(ADDR(.data) - __KERNEL_VA_CODE_OFFSET)
+	.data ALIGN(8) : AT(ADDR(.data) - __KERNEL_VA_PA_OFFSET)
 	{
 		PROVIDE(__kernel_data_start = .);
 		PROVIDE(__global_pointer$ = . + 0x800);
@@ -55,7 +74,7 @@ SECTIONS
 		PROVIDE(__kernel_data_end = .);
 	}
 
-    .bss ALIGN(8) (NOLOAD) : AT(ADDR(.bss) - __KERNEL_VA_CODE_OFFSET)
+    .bss ALIGN(8) (NOLOAD) : AT(ADDR(.bss) - __KERNEL_VA_PA_OFFSET)
     {
         PROVIDE(__kernel_bss_start = .);
         *(COMMON)
