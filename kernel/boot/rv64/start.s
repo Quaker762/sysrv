@@ -102,6 +102,9 @@ _start:
     la t0, srv_arch_Init
     jalr t0
 
+    # If the Kernel returns then we need to stop here so we don't crash
+    j .
+
 #
 # Map a virtual address to a physical address (Sv39 gigapage)
 #
