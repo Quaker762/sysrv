@@ -18,8 +18,8 @@ typedef struct
 {
     srv_physical_address_t kernel_physical_address; /**< Physical Load address of the Kernel */
     size_t                 kernel_load_offset;      /**< Offset of the Kernel from the start of physical memory */
-    srv_physical_address_t physical_memory_base;    /**< Physical Load address of the Kernel */
     void*                  fdt_ptr;                 /**< Pointer to the Flattened Device Tree structure. May be NULL on some platforms */
+    srv_physical_address_t physical_memory_base;    /**< Physical Load address of the Kernel */
 } srv_boot_info_t;
 
 /**

@@ -19,6 +19,7 @@ boot_info:
     .quad 0 # rv64_boot_info_t::kernel_physical_address
     .quad 0 # rv64_boot_info_t::kernel_load_offset
     .quad 0 # rv64_boot_info_t::fdt_ptr
+    .quad 0 # rv64_boot_info_t::physical_memory_base
 
 
 DEFINE_PT __boot_root_page_table  # Root page table
@@ -44,6 +45,7 @@ _start:
     lui t0, 0
     mv tp, a0 # Store the number of this CPU in the $tp register (which is unused by the Kernel)
     bne a0, t0, _boot_ParkHart
+    mv t6, a1 # Move the FDT pointer into t6 so we can use it later
 
     #
     # Configure the boot page tables
@@ -76,12 +78,11 @@ _start:
     la a0, boot_info
     la t0, __KERNEL_PHYSICAL_START
     la t1, __PHYSICAL_MEMORY_START
-    la t2, __PHYSICAL_MEMORY_START
     sub t1, t0, t1
     sd t0, 0(a0)
     sd t1, 8(a0)
-    sd t2, 16(a0)
-    sd a1, 24(a0)
+    sd t6, 16(a0)
+    sd t1, 24(a0)
 
     #
     # Okay, now we're running with Paging enabled, so continue
