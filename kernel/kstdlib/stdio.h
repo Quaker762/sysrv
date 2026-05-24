@@ -31,6 +31,6 @@
  *
  * @return The number of bytes written
  */
-[[gnu::format(vprintf, 1, 2)]] int kvprintf(const char* format, __builtin_va_list va_list);
+[[gnu::format(printf, 1, 0)]] int kvprintf(const char* format, __builtin_va_list va_list);
 
 #endif

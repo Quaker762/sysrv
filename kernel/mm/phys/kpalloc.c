@@ -73,7 +73,7 @@ static inline bool kpalloc_bitmap_IsBitSet(size_t bit)
     return ((mask & entry) != 0ULL);
 }
 
-void kpalloc_Init(uintptr_t base_address, size_t memory_size)
+void srv_kpalloc_InitPageAllocator(uintptr_t base_address, size_t memory_size)
 {
     phys_base_address = base_address; /* Set the physical base address of all RAM */
     free_pages        = (memory_size / SRV_PAGE_SIZE);
@@ -83,7 +83,7 @@ void kpalloc_Init(uintptr_t base_address, size_t memory_size)
     page_bitmap        = srv_kalloc_EternalAlloc(bitmap_entry_count * sizeof(uint64_t));
 }
 
-void* kpalloc_AllocPage(void)
+void* srv_kpalloc_AllocPage(void)
 {
     void*  page_ptr  = NULL;
     size_t bit_index = 0ULL;
@@ -127,7 +127,7 @@ void* kpalloc_AllocPage(void)
     return page_ptr;
 }
 
-void kpalloc_FreePage(void* page_ptr)
+void srv_kpalloc_FreePage(void* page_ptr)
 {
     /* Convert the page pointer to a physical address */
     const srv_physical_address_t page_addr = (srv_physical_address_t)page_ptr;
@@ -145,7 +145,7 @@ void kpalloc_FreePage(void* page_ptr)
     free_pages++;
 }
 
-void kpalloc_MarkRegionUnusable(srv_physical_address_t base_address, size_t length)
+void srv_kpalloc_MarkRegionUnusable(srv_physical_address_t base_address, size_t length)
 {
     const size_t pages = length / SRV_PAGE_SIZE;
 

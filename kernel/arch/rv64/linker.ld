@@ -10,30 +10,42 @@ ENTRY(_start)
 
 __PHYSICAL_MEMORY_START      = 0x80000000;
 __KERNEL_PHYSICAL_START      = 0x80200000;
+__KERNEL_VIRTUAL_START       = 0xffffffff80200000;
 
 SECTIONS
 {
     . = __KERNEL_PHYSICAL_START;
 
-    .text :
+    .boot :
     {
+        __boot_start = .;
         *(.init)
+        *(.init.data)
+        . = ALIGN(16);
+        __boot_end = ABSOLUTE(.);
+    }
+
+    . = __KERNEL_VIRTUAL_START;
+
+    HIDDEN(__KERNEL_VA_CODE_OFFSET = __KERNEL_VIRTUAL_START - __boot_end);
+    .text : AT(ADDR(.text) - __KERNEL_VA_CODE_OFFSET)
+    {
+
         PROVIDE(__kernel_text_start = .);
         *(.text)
         . = ALIGN(4K);
         PROVIDE(__kernel_text_end = .);
     }
 
-    .rodata :
+    .rodata : AT(ADDR(.rodata) - __KERNEL_VA_CODE_OFFSET)
     {
-        *(.init.data)
         PROVIDE(__kernel_rodata_start = .);
         *(.rodata)
         . = ALIGN(4K);
         PROVIDE(__kernel_rodata_end = .);
     }
 
-	.data ALIGN(8) :
+	.data ALIGN(8) : AT(ADDR(.data) - __KERNEL_VA_CODE_OFFSET)
 	{
 		PROVIDE(__kernel_data_start = .);
 		PROVIDE(__global_pointer$ = . + 0x800);
@@ -43,7 +55,7 @@ SECTIONS
 		PROVIDE(__kernel_data_end = .);
 	}
 
-    .bss ALIGN(8) (NOLOAD) :
+    .bss ALIGN(8) (NOLOAD) : AT(ADDR(.bss) - __KERNEL_VA_CODE_OFFSET)
     {
         PROVIDE(__kernel_bss_start = .);
         *(COMMON)
