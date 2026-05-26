@@ -44,4 +44,15 @@ size_t strlen(const char* str);
  */
 int strcmp(const char* s1, const char* s2);
 
+/**
+ * @brief Copies a string of up to @c n characters
+ *
+ * @param[in] s1 Pointer to the string to copy to
+ * @param[in] s2 Pointer to the string to copy from
+ * @param[in] n  The max number of characters
+ *
+ * @return The input pointer @c s1
+ */
+char* strncpy(char* restrict s1, const char* restrict s2, size_t n);
+
 #endif

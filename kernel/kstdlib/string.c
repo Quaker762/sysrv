@@ -50,3 +50,27 @@ int strcmp(const char* s1, const char* s2)
 
     return (int)s1_char - (int)s2_char;
 }
+
+char* strncpy(char* restrict s1, const char* restrict s2, size_t n)
+{
+    bool s2_shorter = false;
+    for (size_t i = 0ULL; i < n; i++)
+    {
+        if (s2[i] == '\0')
+        {
+            /* Fuse this variable to true so we just copy in a NUL for the rest of the loop */
+            s2_shorter = true;
+        }
+
+        if (s2_shorter)
+        {
+            s1[i] = '\0';
+        }
+        else
+        {
+            s1[i] = s2[i];
+        }
+    }
+
+    return s1;
+}
