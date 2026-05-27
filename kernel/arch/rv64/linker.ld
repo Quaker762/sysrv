@@ -100,4 +100,5 @@ SECTIONS
     . = ALIGN(4K);
 
     __kernel_end = .;
+    PROVIDE(__kernel_virtual_end = .);
 }

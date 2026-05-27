@@ -10,7 +10,10 @@
 
 #include <stdint.h>
 
-#define SRV_PAGING_PTE_PER_TABLE 512UL /**< Number of Page Table Entries in a Page Table */
+#define SRV_PAGING_PTE_PER_TABLE       512UL /**< Number of Page Table Entries in a Page Table */
+
+#define SRV_PAGING_KERNEL_VIRTUAL_BASE (uintptr_t)0xFFFFFFFF80000000ULL
+#define SRV_PAGING_KERNEL_REGION_BASE  (uintptr_t)0xFFFFFFFF00000000ULL
 
 typedef uint64_t           page_table_entry_t;                     /** Page Table Entry typedef */
 typedef page_table_entry_t page_table_t[SRV_PAGING_PTE_PER_TABLE]; /** Page Table Typedef */
