@@ -15,4 +15,14 @@
 typedef uint64_t           page_table_entry_t;                     /** Page Table Entry typedef */
 typedef page_table_entry_t page_table_t[SRV_PAGING_PTE_PER_TABLE]; /** Page Table Typedef */
 
+/**
+ * @brief VM System Memory Fence. Ensures that the cache is flushed to new addresses are seen
+ *
+ */
+static inline void srv_VMFence(void)
+{
+    asm volatile("sfence.vma" ::
+                 : "memory");
+}
+
 #endif
