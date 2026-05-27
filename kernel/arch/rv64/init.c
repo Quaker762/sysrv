@@ -12,6 +12,8 @@
 #include <mm/phys/kpalloc.h>
 #include <panic.h>
 
+extern int kmain(void);
+
 srv_arch_init_result_t srv_arch_Init(srv_boot_info_t* boot_info)
 {
     (void)kprintf("The System is being brought up...\n");
@@ -29,6 +31,9 @@ srv_arch_init_result_t srv_arch_Init(srv_boot_info_t* boot_info)
 
     /* Initialize the PMM */
     srv_kpalloc_InitPageAllocator(boot_info->physical_memory_base, memory_size);
+
+    /* Branch to the Kernel's main function */
+    kmain();
 
     return SRV_ARCH_INIT_SUCCESS;
 }
