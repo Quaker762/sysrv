@@ -78,7 +78,6 @@ _start:
     la a0, boot_info
     la t0, __KERNEL_PHYSICAL_START
     la t1, __PHYSICAL_MEMORY_START
-    sub t1, t0, t1
     sd t0, 0(a0)
     sd t1, 8(a0)
     sd t6, 16(a0)
