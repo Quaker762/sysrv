@@ -28,6 +28,7 @@ set(KERNEL_SOURCE_FILES
     kmain.c
     panic.c
     drivers/fdt/fdt.c
+    lock/spinlock.c
     mm/kalloc.c
     mm/phys/kpalloc.c
 )
