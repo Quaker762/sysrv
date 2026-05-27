@@ -41,6 +41,11 @@ struct fdt_header
 bool srv_fdt_Init(void* fdt_ptr);
 
 /**
+ * @brief Get the length of the FDT, in bytes
+ */
+size_t srv_fdt_GetFDTSize(void);
+
+/**
  * @brief Get the amount of memory installed in the system
  *
  * @return The amount of memory in the system, in bytes

@@ -273,6 +273,11 @@ bool srv_fdt_Init(void* fdt_ptr)
     return true;
 }
 
+size_t srv_fdt_GetFDTSize(void)
+{
+    return (size_t)fdt_info_block->totalsize;
+}
+
 size_t srv_fdt_GetMemorySize(void)
 {
     /* FIXME: This should _really_ be better than this, but I just want this to work for now */
