@@ -9,6 +9,7 @@
 
 #include <mm/phys/kpalloc.h>
 #include <mm/kalloc.h>
+#include <panic.h>
 
 typedef uint64_t physalloc_bmap_entry_t;
 
@@ -135,8 +136,7 @@ void srv_kpalloc_FreePage(void* page_ptr)
     /* Make sure the address is actually aligned a page boundary */
     if ((page_addr & (SRV_PAGE_SIZE - 1ULL)) != 0ULL)
     {
-        /* TODO: We need to kpanic() here */
-        return;
+        srv_KernelPanic("page_ptr misaligned on page free!");
     }
 
     const size_t bit_index = kpalloc_bitmap_AddressToBitIndex(page_addr);
