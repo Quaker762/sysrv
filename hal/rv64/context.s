@@ -55,3 +55,5 @@ srv_hal_SaveCPUContext:
 
     # Don't leak stack space!
     addi sp, sp, 256
+
+	jr ra
