@@ -275,7 +275,7 @@ bool srv_fdt_Init(void* fdt_ptr)
 
 size_t srv_fdt_GetFDTSize(void)
 {
-    return (size_t)fdt_info_block->totalsize;
+    return (size_t)__builtin_bswap32(fdt_info_block->totalsize);
 }
 
 size_t srv_fdt_GetMemorySize(void)
