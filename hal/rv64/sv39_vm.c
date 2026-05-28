@@ -20,7 +20,7 @@ void srv_hal_MarkPTEValid(page_table_entry_t* pte)
 
 void srv_hal_MarkPTEReadable(page_table_entry_t* pte)
 {
-    *pte |= RV64_PTE_WRITE;
+    *pte |= RV64_PTE_READ;
 }
 
 void srv_hal_MarkPTEWritable(page_table_entry_t* pte)
