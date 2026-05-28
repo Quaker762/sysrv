@@ -14,9 +14,14 @@
 
 extern int kmain(void);
 
+extern trap_handler_t trap_handler;
+
 srv_arch_init_result_t srv_arch_Init(srv_boot_info_t* boot_info)
 {
     (void)kprintf("The System is being brought up...\n");
+
+    /* Install the trap handler */
+    srv_hal_InstallTrapHandler(&trap_handler);
 
     /* Initialize the device tree */
     const bool fdt_init_ok = srv_fdt_Init(boot_info->fdt_ptr);
@@ -48,6 +53,10 @@ srv_arch_init_result_t srv_arch_Init(srv_boot_info_t* boot_info)
     const size_t                 kernel_region_length = ((srv_physical_address_t)&__kernel_virtual_end - (srv_physical_address_t)&__kernel_virtual_start);
     const srv_physical_address_t kernel_phys_start    = ((srv_physical_address_t)&__kernel_virtual_start - SRV_PAGING_KERNEL_REGION_BASE);
     srv_kpalloc_MarkRegionUnusable(kernel_phys_start, kernel_region_length);
+
+    uint32_t*               blah = (uint32_t*)NULL;
+    const volatile uint32_t test = *blah;
+    (void)test;
 
     /* Branch to the Kernel's main function */
     kmain();
