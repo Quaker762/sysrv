@@ -38,7 +38,7 @@ if ($ENV{SYSRV_ARCH} STREQUAL "rv64")
     set(KERNEL_SOURCE_FILES
         ${KERNEL_SOURCE_FILES}
         arch/rv64/init.c
-        arch/rv64/trap.c
+        arch/rv64/exception.c
         arch/rv64/trap.s
     )
 endif()

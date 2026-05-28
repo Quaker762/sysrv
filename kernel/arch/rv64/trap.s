@@ -10,7 +10,7 @@
 .section .text
 
 .extern srv_hal_SaveCPUContext
-.extern handle_cpu_trap
+.extern srv_arch_ExceptionHandler
 
 .align 4
 trap_handler:
@@ -18,6 +18,6 @@ trap_handler:
     call srv_hal_SaveCPUContext
 
     # Now call the C based trap handler
-    call handle_cpu_trap
+    call srv_arch_ExceptionHandler
 
     sret

@@ -15,6 +15,8 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#include <exception_types.h>
+
 #if defined(__SYSRV_ARCH_RV64__)
 #include <rv64/paging.h>
 #include <rv64/rv64_proc.h>
@@ -108,5 +110,24 @@ void srv_hal_SaveCPUContext(void);
  * @param[in] handler Function pointer to the trap handler
  */
 void srv_hal_InstallTrapHandler(const trap_handler_t* handler);
+
+/**
+ * @brief Decode the exception cause given a processor context
+ *
+ * @param[in] context             The context to decode an exception cause from
+ * @param[out] was_in_kernel_mode Boolean set by the function indicating if the exception happened in Supervisor (Kernel) mode
+ *
+ * @return @ref srv_hal_exception_cause_t indicating the cause of the exception
+ */
+srv_hal_exception_cause_t srv_hal_GetExceptionCause(const srv_cpu_context_t* const context, bool* was_in_kernel_mode);
+
+/**
+ * @brief Get a string version of the exception cause
+ *
+ * @param[in] cause The cause of the exception
+ *
+ * @return A string representation of the @c srv_hal_exception_cause_t
+ */
+char* srv_hal_GetExceptionString(const srv_hal_exception_cause_t cause);
 
 #endif
