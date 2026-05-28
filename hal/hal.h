@@ -78,6 +78,16 @@ void srv_hal_MarkPTEExecutable(page_table_entry_t* pte);
 bool srv_hal_IsPTEDirty(page_table_entry_t* pte);
 
 /**
+ * @brief Determines if a given Page Table Entry is valid or not
+ *
+ * @param[in] pte Pointer to the Page Table Entry
+ *
+ * @return true     The page table entry is valid
+ * @return false    The page table entry is invalid
+ */
+bool srv_hal_IsPTEValid(page_table_entry_t* pte);
+
+/**
  * @brief Write a character to the debug terminal
  *
  * @param[in] c The character to write to the debug terminal

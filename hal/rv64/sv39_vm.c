@@ -37,3 +37,8 @@ bool srv_hal_IsPTEDirty(page_table_entry_t* pte)
 {
     return (*pte & RV64_PTE_DIRTY) != 0ULL;
 }
+
+bool srv_hal_IsPTEValid(page_table_entry_t* pte)
+{
+    return (*pte & RV64_PTE_VALID) != 0ULL;
+}
