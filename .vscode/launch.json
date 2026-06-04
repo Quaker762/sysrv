@@ -1,0 +1,26 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug RV64 Kernel",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/rv64/kern64.elf",
+            "cwd": "${workspaceFolder}",
+            "miDebuggerPath": "/opt/riscv64-gcc/bin/riscv64-unknown-elf-gdb",
+            "miDebuggerServerAddress": "localhost:1234",
+            "stopAtEntry": true,
+            "stopAtConnect": false,
+            "MIMode": "gdb",
+            "preLaunchTask": "Start QEMU",
+            "targetArchitecture": "x64", // riscv:rv32?
+            "setupCommands": [
+                {"text": "-gdb-set architecture riscv:rv64"},
+                {"text": "-environment-cd ${workspaceFolder}"},
+                {"text": "file ./build/rv64/kern64.elf"},
+                {"text": "-break-insert _start"},
+                { "text": "set output-radix 16" }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,60 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build RISC-V Kernel",
+            "type": "shell",
+
+            "command": "python",
+            "args": [
+                "build.py",
+                "build"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "Clean",
+            "type": "shell",
+
+            "command": "python",
+            "args": [
+                "build.py",
+                "clean"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "Start QEMU",
+            "type": "shell",
+            "command": "python",
+            "args": [
+                "run.py",
+                "launch",
+                "build/rv64/kern64.elf"
+            ],
+            "dependsOn": ["Build RISC-V Kernel"],
+            "isBackground": true,
+            "problemMatcher": [{
+                "pattern": [{
+                    "regexp": ".",
+                    "file": 1,
+                    "location": 2,
+                    "message": 3
+                }],
+                  "background":{
+                    "activeOnStart": true,
+                    "beginsPattern": ".",
+                    "endsPattern": "QEMU started",
+                    }
+                }]
+        },
+    ]
+}

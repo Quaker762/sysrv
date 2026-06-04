@@ -1,0 +1,27 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**"
+            ],
+            "defines": [],
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-clang-x64"
+        },
+        {
+            "name": "rv64_unknown",
+            "includePath": [
+                "${workspaceFolder}/**"
+            ],
+            "defines": [
+                "__SYSRV_ARCH_RV64__"
+            ],
+            "cppStandard": "c++23",
+            "intelliSenseMode": "linux-gcc-arm64",
+            "compilerPath": "/opt/riscv64-gcc/bin/riscv64-unknown-elf-gcc",
+            "cStandard": "c23"
+        }
+    ],
+    "version": 4
+}
