@@ -58,66 +58,90 @@ static const char* digits = "0123456789ABCDEF";
     return num;
 }
 
-[[gnu::always_inline]] static inline int printf_internal_Hex(int number)
+[[gnu::always_inline]] static inline int printf_internal_HexPadded(uint32_t number, int zero_pad_width)
 {
-    /* Stole this from kling, but it's pretty basic */
-
-    int ret    = 0;
-    int shifts = 0;
+    int value_digits = 0;
     for (__SIZE_TYPE__ i = number; i > 0; i >>= 4)
     {
-        shifts++;
+        value_digits++;
     }
 
-    if (shifts == 0)
+    if (value_digits == 0)
     {
-        shifts = 1;
+        value_digits = 1;
     }
 
-    shifts *= 4;
-    for (int i = (32 - shifts) / 4; i > 0; i--)
+    int digits_to_print = value_digits;
+    if (zero_pad_width > digits_to_print)
     {
-        srv_hal_WriteDebugChar('0');
+        digits_to_print = zero_pad_width;
     }
 
-    while (shifts > 0)
+    for (int i = digits_to_print - 1; i >= 0; i--)
     {
-        shifts -= 4;
-        srv_hal_WriteDebugChar(digits[(number >> shifts) & 0xFU]);
+        if (i >= value_digits)
+        {
+            srv_hal_WriteDebugChar('0');
+            continue;
+        }
+
+        srv_hal_WriteDebugChar(digits[(number >> (i * 4)) & 0xFU]);
     }
 
-    return ret;
+    return digits_to_print;
 }
 
-[[gnu::always_inline]] static inline int printf_internal_HexULong(srv_printf_ulong_type_t number)
+[[gnu::always_inline]] static inline int printf_internal_HexULongPadded(srv_printf_ulong_type_t number, int zero_pad_width)
 {
-    /* Stole this from kling, but it's pretty basic */
-
-    int ret    = 0;
-    int shifts = 0;
-    for (__SIZE_TYPE__ i = number; i > 0; i >>= 4)
+    int value_digits = 0;
+    for (srv_printf_ulong_type_t i = number; i > 0; i >>= 4)
     {
-        shifts++;
+        value_digits++;
     }
 
-    if (shifts == 0)
+    if (value_digits == 0)
     {
-        shifts = 1;
+        value_digits = 1;
     }
 
-    shifts *= 4;
-    for (int i = (32 - shifts) / 4; i > 0; i--)
+    int digits_to_print = value_digits;
+    if (zero_pad_width > digits_to_print)
     {
-        srv_hal_WriteDebugChar('0');
+        digits_to_print = zero_pad_width;
     }
 
-    while (shifts > 0)
+    for (int i = digits_to_print - 1; i >= 0; i--)
     {
-        shifts -= 4;
-        srv_hal_WriteDebugChar(digits[(number >> shifts) & 0xFU]);
+        if (i >= value_digits)
+        {
+            srv_hal_WriteDebugChar('0');
+            continue;
+        }
+
+        srv_hal_WriteDebugChar(digits[(number >> (i * 4)) & 0xFU]);
     }
 
-    return ret;
+    return digits_to_print;
+}
+
+[[gnu::always_inline]] static inline int printf_internal_ParseZeroPadWidth(const char* format, __SIZE_TYPE__* index)
+{
+    if (format[*index] != '0')
+    {
+        return 0;
+    }
+
+    int zero_pad_width = 0;
+    (*index)++;
+
+    while ((format[*index] >= '0') && (format[*index] <= '9'))
+    {
+        zero_pad_width *= 10;
+        zero_pad_width += (int)(format[*index] - '0');
+        (*index)++;
+    }
+
+    return zero_pad_width;
 }
 
 [[gnu::always_inline]] static inline int printf_internal_String(const char* string)
@@ -145,6 +169,9 @@ int printf_internal(const char* format, __builtin_va_list* va)
         if (character == '%')
         {
             index++;
+
+            int zero_pad_width = printf_internal_ParseZeroPadWidth(format, &index);
+
             const char format_char = format[index];
             switch (format_char)
             {
@@ -156,7 +183,7 @@ int printf_internal(const char* format, __builtin_va_list* va)
                 if (next_format_char == 'x')
                 {
                     srv_printf_ulong_type_t val  = __builtin_va_arg(*va, srv_printf_ulong_type_t);
-                    num_written                 += printf_internal_HexULong(val);
+                    num_written                 += printf_internal_HexULongPadded(val, zero_pad_width);
                     break;
                 }
                 else if (next_format_char == 'u')
@@ -189,7 +216,7 @@ int printf_internal(const char* format, __builtin_va_list* va)
             case 'x':
             {
                 uint32_t val  = __builtin_va_arg(*va, uint32_t);
-                num_written  += printf_internal_Hex(val);
+                num_written  += printf_internal_HexPadded(val, zero_pad_width);
 
                 break;
             }
