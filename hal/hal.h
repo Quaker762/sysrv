@@ -75,7 +75,7 @@ void srv_hal_MarkPTEExecutable(page_table_entry_t* pte);
  * @return @c true  if the PTE's "dirty" flag is set
  * @return @c false if the PTE's "dirty" flag is unset
  */
-bool srv_hal_IsPTEDirty(page_table_entry_t* pte);
+bool srv_hal_IsPTEDirty(const page_table_entry_t* pte);
 
 /**
  * @brief Determines if a given Page Table Entry is valid or not
@@ -85,7 +85,7 @@ bool srv_hal_IsPTEDirty(page_table_entry_t* pte);
  * @return true     The page table entry is valid
  * @return false    The page table entry is invalid
  */
-bool srv_hal_IsPTEValid(page_table_entry_t* pte);
+bool srv_hal_IsPTEValid(const page_table_entry_t* pte);
 
 /**
  * @brief Write a character to the debug terminal
@@ -139,5 +139,16 @@ srv_hal_exception_cause_t srv_hal_GetExceptionCause(const srv_cpu_context_t* con
  * @return A string representation of the @c srv_hal_exception_cause_t
  */
 char* srv_hal_GetExceptionString(const srv_hal_exception_cause_t cause);
+
+/**
+ * @brief Walk a page table to find the page table entry for a virtual address
+ *
+ * @param[in] page_table The page table to walk
+ * @param[in] va         The Virtual Address to query
+ *
+ * @return Pointer to a @ref page_table_entry_t if it exists for @c va
+ * @return @c NULL if the given page table entry is unmapped or cannot be found
+ */
+page_table_entry_t* srv_hal_WalkPageTable(const page_table_t* page_table, srv_virtual_address_t va);
 
 #endif
