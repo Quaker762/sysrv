@@ -23,6 +23,18 @@ void* memcpy(void* restrict s1, const void* restrict s2, size_t n)
     return s1;
 }
 
+void* memset(void* s, int c, size_t n)
+{
+    uint8_t* s_as_u8 = (uint8_t*)s;
+
+    for (size_t i = 0UL; i < n; i++)
+    {
+        s_as_u8[i] = (uint8_t)c;
+    }
+
+    return s;
+}
+
 size_t strlen(const char* str)
 {
     size_t count = 0ULL;

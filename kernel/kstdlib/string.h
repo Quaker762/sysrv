@@ -22,6 +22,17 @@
 [[gnu::access(write_only, 1), gnu::access(read_only, 2)]] void* memcpy(void* restrict s1, const void* restrict s2, size_t n);
 
 /**
+ * @brief Kernel Standard Library memset implementation
+ *
+ * @param[in] s Pointer to the memory block to write to
+ * @param[in] c The value to write
+ * @param[in] n Number of bytes to write (e.g the length of s)
+ *
+ * @return Pointer to @c s
+ */
+[[gnu::access(write_only, 1)]] void* memset(void* s, int c, size_t n);
+
+/**
  * @brief Kernel Standard Library @c strlen implementation
  *
  * @param[in] str Pointer to the character array to compute the length of
