@@ -97,6 +97,10 @@ page_table_entry_t* srv_hal_WalkPageTable(const page_table_t* page_table, srv_vi
 
             curr_table = (page_table_t*)rv64_PTEToPhysAddr(pte);
         }
+        else
+        {
+            break; /* Page is unmapped at this level */
+        }
     }
 
     return found_pte;
